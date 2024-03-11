@@ -1,2 +1,82 @@
 # Django for beginners
 
+## 1. Введение
+
+### Запуск Django-проекта
+
+```
+pip install django
+
+pip freeze > requirements.txt
+
+python -m django startproject mysite
+
+cd mysite
+```
+Запуск сервера проекта
+
+```
+python manage.py runserver
+```
+После запуска сервера, имеем доступ к нему через ```http://127.0.0.1:8000```
+
+В файле проекта ```urls.py``` есть переменная ```urlpatterns```, где прописываем доступные пути проекта. При инициализации проекта описан только один путь для доступа к административной панели.
+
+Проводим первую миграцию (создание базы данных для создания таблицы пользователей) и создаем суперпользователя:
+```
+python manage.py migrate
+
+python manage.py createsuperuser
+```
+
+Настройки базы данных прописаны в ```settings.py```.
+Для комфортной работы с БД в Pycharm можем поставить плагин Database Navigator.
+
+Для знакомства с командами manage.py используем команду ```python manage.py help```
+
+### Создание Django-приложения
+
+Для создания django-приложения shopapp:
+
+```
+python manage.py startapp shopapp
+```
+В django-проекте появится папка shopapp с содержимым. В apps.py описывается настрока приложения. Для включения его в проект, копируем название класса приложения (ShopappConfig) и включаем его в settings.py в переменную INSTALLED_APPS, как ```shopapp.apps.ShopappConfig'.
+
+Создаем новый файл в приложении shopapp для роута: ```shopapp/urls.py```, в нем прописываем:
+
+```
+from django.urls import path
+from .views import shop_index
+
+app_name = "shopapp"
+
+urlpatterns = [
+   path("", shop_index, name="index"),
+]
+```
+
+А в файл mysite/urls.py в переменную urlpatterns добавляем ```path('shop/', include('shopapp'))```
+
+В файл shopapp/views.py записываем представление:
+
+
+```
+from django.http import HttpResponse, HttpRequest
+from django.shortcuts import render
+
+def shop_index(request: HttpRequest):
+  context = {
+    time_running = 
+  }
+  return render(request, 'shopapp/shop-index.html', context=context)
+
+```
+
+### Django-шаблоны
+
+Для использования шаблонов создаем папку shopapp/templates/shopapp в которой создаются шаблоны html, например shop-index.html, который мы используем в shopapp/views.py
+
+Для вывода переменных в html шаблонах используется вставки ```{{ time_running }}``` и запуск встроенных функций ```{% lorem 3 p random %}```
+
+
