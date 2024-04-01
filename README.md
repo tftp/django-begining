@@ -41,7 +41,7 @@ python manage.py createsuperuser
 ```
 python manage.py startapp shopapp
 ```
-В django-проекте появится папка shopapp с содержимым. В apps.py описывается настрока приложения. Для включения его в проект, копируем название класса приложения (ShopappConfig) и включаем его в settings.py в переменную INSTALLED_APPS, как ```shopapp.apps.ShopappConfig'.
+В django-проекте появится папка shopapp с содержимым. В apps.py описывается настрока приложения. Для включения его в проект, копируем название класса приложения (ShopappConfig) и включаем его в settings.py в переменную INSTALLED_APPS, как ```shopapp.apps.ShopappConfig```.
 
 Создаем новый файл в приложении shopapp для роута: ```shopapp/urls.py```, в нем прописываем:
 
