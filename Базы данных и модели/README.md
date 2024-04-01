@@ -107,7 +107,7 @@ python manage.py migrate shopapp 0002
 ```
 
 
-### Создание django-команд
+### 3. Создание django-команд
 
 Создается папка shopapp/management/commands
 
@@ -176,7 +176,7 @@ def products_list(request: HttpRequest):
 
 ```
 
-### 3. Связи между таблицами
+### 4. Связи между таблицами
 
 Создаем модель Order в models.py:
 
@@ -267,7 +267,7 @@ context = {
  - [Many-to-one relationships](https://docs.djangoproject.com/en/4.0/topics/db/examples/many_to_one/)
  - [Many-to-many relationships](https://docs.djangoproject.com/en/4.0/topics/db/examples/many_to_many/)
 
-### Метаданные моделей
+### 5. Метаданные моделей
 
 Рассмотрим на примере class Product, в класс Product добавим новый класс Meta:
 
