@@ -263,6 +263,21 @@ context = {
 }
 
 ```
-[One-to-one relationships](https://docs.djangoproject.com/en/4.0/topics/db/examples/one_to_one/)
-[Many-to-one relationships](https://docs.djangoproject.com/en/4.0/topics/db/examples/many_to_one/)
-[Many-to-many relationships](https://docs.djangoproject.com/en/4.0/topics/db/examples/many_to_many/)
+ - [One-to-one relationships](https://docs.djangoproject.com/en/4.0/topics/db/examples/one_to_one/)
+ - [Many-to-one relationships](https://docs.djangoproject.com/en/4.0/topics/db/examples/many_to_one/)
+ - [Many-to-many relationships](https://docs.djangoproject.com/en/4.0/topics/db/examples/many_to_many/)
+
+### Метаданные моделей
+
+Рассмотрим на примере class Product, в класс Product добавим новый класс Meta:
+
+```
+class Product(models.Model):
+  class Meta:
+    ordering = ["name"] #при выводе сортировка по имени продукта если задать ["-name"] то обратная сортировка
+
+```
+
+[Model Meta options | Django documentation](https://docs.djangoproject.com/en/4.1/ref/models/options/)
+
+
