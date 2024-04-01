@@ -1,8 +1,8 @@
 # Django for beginners
 
-## 1. Введение
+## Введение
 
-### Запуск Django-проекта
+### 1. Запуск Django-проекта
 
 ```
 pip install django
@@ -34,7 +34,7 @@ python manage.py createsuperuser
 
 Для знакомства с командами manage.py используем команду ```python manage.py help```
 
-### Создание Django-приложения
+### 2. Создание Django-приложения
 
 Для создания django-приложения shopapp:
 
@@ -73,7 +73,7 @@ def shop_index(request: HttpRequest):
 
 ```
 
-### Django-шаблоны
+### 3. Django-шаблоны
 
 Для использования шаблонов создаем папку shopapp/templates/shopapp в которой создаются шаблоны html, например shop-index.html, который мы используем в shopapp/views.py
 
