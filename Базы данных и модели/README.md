@@ -43,6 +43,12 @@ def groups_list(request: HttpRequest):
 {% endif %}
 
 ```
+В urls.py нужно добавить путь по которому откроется список групп:
+
+```
+path("groups/", groups_list, name="groups_list")
+
+```
 
 ### 2. Модели и поля
 
@@ -56,6 +62,10 @@ class Product(models.Model):
   #Объявляем поля-свойства для Product
   name = models.Charfield(max_length=100)
   description = models.TextFields(null=False, blank=True)
+  price = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+  discount = models.SmallIntegerField(default=0)
+  created_at = models.DateTimeField(auto_now_add=True)
+
 
 ```
 
@@ -89,6 +99,13 @@ python manage.py migrate
 python manage.py migrate shopapp
 
 ```
+Чтобы откатиться на предыдущую миграцию, нужно выполнить команду ```migrate``` и указать номер предыдущей миграции:
+
+```
+python manage.py migrate shopapp 0002
+
+```
+
 
 ### Создание django-команд
 
@@ -136,6 +153,26 @@ python mange.py help
 
 ```
 python manage.py create_products
+
+```
+[Документация по моделям](https://docs.djangoproject.com/en/4.1/topics/db/models/)
+
+Для отображения продуктов в views.py:
+
+```
+from .models import Product
+
+def products_list(request: HttpRequest):
+  context = {
+    "products": product.objects.all()
+  }
+  return render(request, 'shopapp/products-list.html', context=context)
+
+```
+При выводе свойств продуктов в шаблоне, интересны следующие команды:
+
+```
+<p>Discount: {% firstof product.discount 'no discount' %}</p> #firstof берет первое ненулевое значение
 
 ```
 
