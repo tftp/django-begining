@@ -142,4 +142,107 @@ inlines = [
 
 ### 4. Группировка полей
 
+Для решения этой задачи используется fieldsets = [ИмяСекции, {Параметры}], добавим в ProductAdmin:
+
+```
+fieldsets = [
+  (None, {
+    "fields": ("name", "description"),
+  }),
+
+  ("Price options", {
+    "fields": ("price", "discount"),   #Поля в секции
+    "classes": ("collapse", "wide"),   #collapse - Добавляет возможность Свернут/Развернуть секцию, wide - Добавляет отступ
+  })
+  
+  ("Extra options", {
+    "fields": ("archived",),
+    "classes": ("collapse",),
+    "descriptions": "Extra options. Field 'archived' is for soft delete",
+  })
+]
+
+```
+
+### 5. Групповые действия
+
+В админке можно удалять записи, но как сделать, чтобы их не удалять а помечать, как удаленные?
+Для этого нужно создать определенные действия.
+Добавим поле ```archived``` в ProductAdmin:
+
+```
+list_display = "pk", "name", "description_short", "price", "discount", "archived"
+
+```
+Далее создаем действие которое будет архивировать записи с новой функцией merk_archived:
+
+```
+@admin.action(description="Archive product")  #Дескриптор создает в админке действие
+def merk_archived(modeladmin: admin.ModelAdmin, request: HttpRequest, queryset: QuerySet):
+  queryset.update(archived=True)
+
+```
+
+Чтобы указать, что это действие относится к ProductAdmin, внутри класса добавляем:
+
+```
+actions = [
+  mark_archived,
+]
+
+```
+
+Теперь для Products доступен новый Action для архивирования продуктов.
+
+По аналогии делается Действие для разархивирования продуктов.
+
+Миксины (Примеси) - это отдельные классы, которые реализуют одно действие.
+
+Для миксинов создадим новый файл ```admin_mixins.py``` в котором будет вся логика
+
+```
+from django.db.models import QuerySet
+from django.http import HttpRequest, HttpResponse
+from django.db.models.options import Options
+
+class ExportAsCSVMixin:
+  def export_csv(self, request: HttpRequest, queryset: QuerySet);
+    #Здесь реализуем логику действия
+    meta: Options = self.model._meta #meta возьмет список всех полей модели
+    field_names = [field.name for field in meta.fields]
+
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = f"attachment; filename={meta}-export.csv"
+
+    csv_writer = csv.writer(response)
+
+    csv_writer.writerow(field_names)
+
+    for obj in queryset:
+      csv_writer.writerow([getattr(obj, field) for field in field_name])
+
+    return response
+
+  export_csv.short_description = "Export as CSV"
+
+
+```
+
+Теперь в ```admin.py``` экспортируем миксин
+
+```
+from .admin_mixins import ExportAsCSVMixin
+...
+#Подмешаем в ProductAdmin
+class ProductAdmin(admin.ModelAdmin, ExportAsCSVMixin):
+  #добавим в actions действие export_csv
+  actions = [
+    mark_archived,
+    mark_unarchived,
+    "export_csv",
+  ]
+...
+
+```
+
 
