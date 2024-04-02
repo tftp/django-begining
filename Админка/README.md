@@ -76,4 +76,20 @@ def description_short(self, obj: Product) -> str:
 
 ### 2. Фильтры и поле поиска
 
+Добавляем в admin.py в class ProductAdmin, для сортировки по полю "pk":
+
+```
+ordering = "pk",
+
+```
+
+Добавление поиска по записям, добавляем в класс ProductAdmin:
+
+```
+search_filds = "name", "description"
+
+```
+
+### 3. Отображение и редактирование связанных записей
+
 
