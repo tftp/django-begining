@@ -174,11 +174,11 @@ fieldsets = [
 list_display = "pk", "name", "description_short", "price", "discount", "archived"
 
 ```
-Далее создаем действие которое будет архивировать записи с новой функцией merk_archived:
+Далее создаем действие которое будет архивировать записи с новой функцией mark_archived:
 
 ```
 @admin.action(description="Archive product")  #Дескриптор создает в админке действие
-def merk_archived(modeladmin: admin.ModelAdmin, request: HttpRequest, queryset: QuerySet):
+def mark_archived(modeladmin: admin.ModelAdmin, request: HttpRequest, queryset: QuerySet):
   queryset.update(archived=True)
 
 ```
@@ -245,4 +245,5 @@ class ProductAdmin(admin.ModelAdmin, ExportAsCSVMixin):
 
 ```
 
+[Admin actions | Django documentation](https://docs.djangoproject.com/en/4.1/ref/contrib/admin/actions/)
 
