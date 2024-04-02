@@ -92,4 +92,54 @@ search_filds = "name", "description"
 
 ### 3. Отображение и редактирование связанных записей
 
+Добавим модель Order в admin.py:
+
+```
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+  list_display = "delivery_address", promocode", created_at", "user"
+
+  #чтобы использовать жадную загрузку user создаем метод 
+  def get_queryset(self, request):
+    return Order.objects.select_related("user")
+
+  #Для отображения того или иного поля user создаем метод
+  def user_verbose(self, obj: Order) -> str:
+    return obj.user.first_name or obj.user.username
+  
+  # Если есть user_verbose то добавляем его в list_display
+  # list_display = "delivery_address", promocode", created_at", "user_verbose"
+
+```
+Для подключения связаных записей, их редактирования в админ панели, нужно подключить ещё одну модель в admin.py:
+
+```
+class ProductInline(admin.TabularInline):
+ model = Order.products.through
+
+```
+Теперь указываем эту связь в OrderAdmin:
+
+```
+#Добавляем в OrderAdmin
+inlines = [ 
+  ProductInline,
+]
+
+```
+Хорошей практикой будет указать жадную подгрузку products в order:
+
+```
+  def get_queryset(self, request):
+    return Order.objects.select_related("user").prefetch_related("products")
+
+```
+
+Вместо ```class ProductInline(admin.TabularInline)``` можно написать ```class ProductInline(admin.StackedInline)```, изменится только ототбражение связанных записей, но функции останутся те же.
+
+
+[The Django admin site](https://docs.djangoproject.com/en/4.1/ref/contrib/admin/#inlinemodeladmin-objects)
+
+### 4. Группировка полей
+
 
