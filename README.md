@@ -56,7 +56,7 @@ urlpatterns = [
 ]
 ```
 
-А в файл mysite/urls.py в переменную urlpatterns добавляем ```path('shop/', include('shopapp'))```
+А в файл mysite/urls.py в переменную urlpatterns добавляем ```path('shop/', include('shopapp.urls'))```
 
 В файл shopapp/views.py записываем представление:
 
