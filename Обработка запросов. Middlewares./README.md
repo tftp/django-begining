@@ -80,4 +80,7 @@ def handle_file_upload(request: HttpRequest) -> HttpResponse:
 
 
 ```
+ - [Request and response objects | Django documentation](https://docs.djangoproject.com/en/4.1/ref/request-response/#django.http.HttpRequest.POST)
+ - [File storage API | Django documentation](https://docs.djangoproject.com/en/4.1/ref/files/storage/)
+
 
