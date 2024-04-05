@@ -83,4 +83,43 @@ def handle_file_upload(request: HttpRequest) -> HttpResponse:
  - [Request and response objects | Django documentation](https://docs.djangoproject.com/en/4.1/ref/request-response/#django.http.HttpRequest.POST)
  - [File storage API | Django documentation](https://docs.djangoproject.com/en/4.1/ref/files/storage/)
 
+### 3. Middleware
+
+Для использования создаем модуль, в папке приложения, middlewares.py:
+
+```
+#Middleware как функция
+def set_useragent_on_request_middleware(get_response):
+  
+  def middleware(request: HttpRequest):
+    
+    response = get_response(request)
+
+    return response
+
+  return middleware
+
+
+#Middleware в виде класса
+class CountRequestsMiddleware:
+  def __init__(self, get_response):
+    self.get_response = get_response
+    self.requests_count = 0
+    self.exeptions_count = 0
+
+  def __call__(self, request: HttpRequest):
+    self.requests_count += 1
+    response = self.get_response(request)
+    return response
+
+  #Обработка ошибок
+  def process_exeption(self, request: HttpRequest, exception: Exception):
+    self.exception_count += 1
+    print("got", self.exception_count, "exceptions so far")
+
+```
+
+В ```settings.py``` подключаем наш middleware ```'myapp.middlewares.set_useragent_on_request_middleware'``` или ```'myapp.middlewares.CountRequestsMiddleware'```
+
+ - [Middleware | Django documentation](https://docs.djangoproject.com/en/4.1/topics/http/middleware/)
 
