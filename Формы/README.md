@@ -215,6 +215,36 @@ class UploadFileForm(forms.Form):
 
 ```
 
+### Model Form
+
+Позволяет сгенерировать форму на основе модели.
+
+Реализация моделей через формы в forms.py:
+
+```
+from .models import Product
+
+class ProductForm(forms.ModelForm):
+  class Meta:
+    model = Product
+    fields = "name", "price", "description", "discount"
+
+```
+
+Так как ModelForm связан с моделью, то во views.py можно не использовать строчку
+
+```
+      Product.objects.create(**form.cleaned_data)
+
+```
+
+а вместо неё писать строчку:
+
+```
+    form.save()
+
+```
+
 
  - [Form and field validation | Django documentation](https://docs.djangoproject.com/en/4.1/ref/forms/validation/)
  - [Creating forms from models](https://docs.djangoproject.com/en/4.1/topics/forms/modelforms/)
