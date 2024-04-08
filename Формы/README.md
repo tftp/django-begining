@@ -116,7 +116,7 @@ def create_product(request: HttpRequest) -> HttpResponse:
 
 ```
 
-Использование redirect и revese во views.py:
+Использование redirect и reverse во views.py:
 
 ```
 from django.shortcuts import render, redirect, reverse
@@ -143,7 +143,79 @@ def create_product(request: HttpRequest) -> HttpResponse:
       url = reverse("shopapp:product_list")
       return redirect(url)
     else:
-      form = ProductForm(request.POST)
+      form = ProductForm()
+...
 
 ```
+Добавление валидатора:
+
+```
+from django.core import validators
+...
+
+class ProductForm(forms.Form):
+  name = forms.CharField(max_length=100)
+  price = forms.DecimalFiels(min_value=1, max_value=100000, decimal_places=2)
+  description = forms.CharField(
+    label="Product description",
+    widget=forms.Textarea(attrs={"rows": 5, "cols": 30}),
+    validators=[validators.RegexValidator(    #Используем встроенный валидатор RegexValidator
+      regex=r"greate",
+      message="Field must contain word 'great'",
+    )],
+  )
+
+```
+Форма для загрузки файлов:
+
+```
+class UploadFileForm(forms.Form):
+  file = forms.FileField()
+
+```
+
+тогда во views.py сошлемся на эту форму:
+
+```
+...
+def handle_file_upload(request: HttpRequest) -> HttpResponse:
+  if request.method="POST" and request.FILES.get("myfile"):
+    form = UploadFileForm(request.POST, request.FILES)
+    if form.is_valid():
+      #myfile = request.FILES["myfile"]
+      myfile = form.cleaned_data["file"]
+      fs = FileSystemStorage() #Создается экземпляр для сохранения файла
+      filename = fs.save(myfile.name, myfile)
+      print("save file", filename)
+  else:
+   form = UploadFileForm()
+ 
+  context = {
+    "form": form,
+  }
+  ...
+
+```
+
+Создание функций валидаторов.
+
+```
+#forms.py
+
+from django.core.files.uploadfile import InMemoryUploadFile
+from django.core.exceptions import ValidationError
+
+def validate_file_name(file: InMemoryUploadFile) -> None:
+  if file.name and "virus" in file.name:
+    raise ValidationError("file name should not contain 'virus'")
+
+#подключаем нашу функцию как валидатор
+class UploadFileForm(forms.Form):
+  file = forms.FileField(validator=[validate_file_name])
+
+```
+
+
+ - [Form and field validation | Django documentation](https://docs.djangoproject.com/en/4.1/ref/forms/validation/)
+ - [Creating forms from models](https://docs.djangoproject.com/en/4.1/topics/forms/modelforms/)
 
