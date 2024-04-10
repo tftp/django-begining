@@ -256,5 +256,47 @@ class ProductDeleteView(DeleteView):
   success_url = reverse_lazy("shopapp:products_list")
 
 ```
+Имя шаблона должно складываться как ```product_confirm_delete.html```
 
+Пример шаблона:
+
+```
+{% block body %}
+  Are you sure want to delete {{ object.name }}?
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Delete</button>
+  </form>
+{% endblock %>
+
+```
+Путь в urls должен быть примерно таким:
+
+```
+path("products/<int:pk>/confirm-delete/", ProductDeleteView.as_view(), name="product_delete")
+
+```
+
+Использование SoftDelete
+
+Для SodtDelete корректируем метод ```form_valid``` добавив его в класс ```ProductDeleteView```:
+
+```
+class ProductDeleteView(DeleteView):
+  model = Product
+  success_url = reverse_lazy("shopapp:products_list")
+
+  def form_valid(self, form):
+    success_url = self.get_success_url()
+    self.object.archived = True # Так как у нас есть поле archived
+    self.object.save()
+    return HttpResponseRedirect(success_url)
+
+```
+
+В этом случае при удалении изменится значение аттрибута объекта ```archived```, и чтобы он не отображался в общем списке ProductsListView нужно вместо ```model = Product``` написать ```queryset.object.filter(archived=False)```
+
+ - [DeleteView](https://docs.djangoproject.com/en/4.1/ref/class-based-views/generic-editing/#deleteview)
 
