@@ -279,9 +279,9 @@ path("products/<int:pk>/confirm-delete/", ProductDeleteView.as_view(), name="pro
 
 ```
 
-Использование SoftDelete
+### Использование SoftDelete
 
-Для SodtDelete корректируем метод ```form_valid``` добавив его в класс ```ProductDeleteView```:
+Для SoftDelete корректируем метод ```form_valid``` добавив его в класс ```ProductDeleteView```:
 
 ```
 class ProductDeleteView(DeleteView):
