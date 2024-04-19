@@ -65,9 +65,11 @@ path("login/", login_view, name="login")
 Для подключения стандартной страницы аутентификации, достаточно подключить её через LoginView в urls:
 
 ```
+from django.contrib.auth import views
+
 path(
   "login/", 
-   LoginViews.as_view(
+   views.LoginViews.as_view(
      template_name="myauth/login.html",  #переназначаем шаблон по умолчанию
      redirect_authenticated_user=True,   #нужно для перенаправления аутентифицированных пользователей
    ), 
@@ -80,7 +82,8 @@ path(
 ```
   <form method="post">
     {% csrf_token %}
-      {% form.as_p %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
   </form>
 
 ```
@@ -138,6 +141,12 @@ def logout_view(request: HttpRequest):
 class MyLogoutView(LogoutView):
   next_page = reverse_lazy("myauth:login")
 
-```
+#Или использовать функцию logout_then_login в urls:
+  path("logout/",views.logout_then_login, name="logout")
 
+#для редиректа logout_then_login нужно в settings добавить переменную:
+LOGIN_URL = '/login/'
+
+
+```
 
